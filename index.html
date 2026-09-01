@@ -19,9 +19,6 @@
     2. TAG DO GOOGLE ADS: cole sua tag base (gtag.js) no bloco marcado
        abaixo quando for subir a campanha.
 
-    3. PRA TESTAR NO COMPUTADOR: abra com ?preview no fim da URL
-       (ex.: http://127.0.0.1:8000/?preview), senão a tela trava em
-       "Acesso disponível apenas pelo celular".
     =====================================================================
   -->
 
@@ -136,7 +133,6 @@
       var challengeExpected = null;
       var challengeMode = 'verification';
       var params = new URLSearchParams(window.location.search);
-      var isPreview = params.has('preview');
       var statusText = document.getElementById('statusText');
       var progressBar = document.getElementById('progressBar');
       var continueButton = document.getElementById('continueButton');
@@ -151,7 +147,6 @@
       }
 
       function isMobileDevice() {
-        if (isPreview) return true;
         var userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
         var mobileUserAgent = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(userAgent);
         var smallViewport = window.matchMedia('(max-width: 820px)').matches;
@@ -186,7 +181,6 @@
       }
 
       function hasAutomationSignals() {
-        if (isPreview) return false;
         return Boolean(navigator.webdriver || window.callPhantom || window._phantom || window.__nightmare || document.documentElement.getAttribute('webdriver'));
       }
 
