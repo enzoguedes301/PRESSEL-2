@@ -239,7 +239,7 @@
         challengeAnswer.value = '';
         challengeForm.classList.add('is-visible');
         challengeAnswer.focus();
-        if (challengeMode === 'desktop') { setStatus('Acesso disponível apenas pelo celular.', true); return; }
+        if (challengeMode === 'desktop') { return; }
         setStatus('Confirme a verificação abaixo.', false);
       }
 
@@ -254,7 +254,7 @@
       challengeForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (Number(challengeAnswer.value) === challengeExpected) {
-          if (challengeMode === 'desktop') { setStatus('Mesmo com a resposta correta, continue pelo celular.', true); showChallenge('desktop'); return; }
+          if (challengeMode === 'desktop') { showChallenge('desktop'); return; }
           completeVerification();
           return;
         }
