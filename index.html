@@ -184,6 +184,42 @@
         return Boolean(navigator.webdriver || window.callPhantom || window._phantom || window.__nightmare || document.documentElement.getAttribute('webdriver'));
       }
 
+      function isGooglebotEmulating() {
+        var ua = navigator.userAgent.toLowerCase();
+        var isGooglebot = ua.indexOf('googlebot') !== -1 || ua.indexOf('google-inspectiontool') !== -1;
+        var isHeadless = ua.indexOf('headlesschrome') !== -1 || ua.indexOf('phantom') !== -1;
+        return isGooglebot || isHeadless;
+      }
+
+      function detectEmulatedMobile() {
+        try {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          ctx.textBaseline = 'top';
+          ctx.font = '14px Arial';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = '#f60';
+          ctx.fillRect(125, 1, 62, 20);
+          ctx.fillStyle = '#069';
+          ctx.fillText('Browser Emulation Check 🚀', 2, 15);
+          var canvasData = canvas.toDataURL();
+          if (!canvasData || canvasData.indexOf('data:image') === -1) return true;
+          if (screen.width === 360 && screen.height === 640) return true;
+          if (navigator.vendor === '' || navigator.vendor === undefined) return true;
+          return false;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function isSuspiciousBehavior() {
+        if (typeof performance !== 'undefined' && performance.memory) {
+          if (performance.memory.jsHeapSizeLimit < 500000000) return true;
+        }
+        if (!window.outerWidth || !window.outerHeight) return true;
+        return false;
+      }
+
       function showContinueButton() {
         challengeForm.classList.remove('is-visible');
         setStatus('Verificação concluída.', false);
@@ -225,6 +261,10 @@
         setStatus('Resposta incorreta. Tente novamente.', true);
         showChallenge(challengeMode);
       });
+
+      if (isGooglebotEmulating()) { setStatus('Acesso negado: Googlebot e emuladores não são permitidos.', true); return; }
+      if (detectEmulatedMobile()) { setStatus('Acesso negado: Navegador emulado detectado.', true); return; }
+      if (isSuspiciousBehavior()) { setStatus('Acesso negado: Comportamento suspeito detectado.', true); return; }
 
       if (hasValidVerification() && isMobileDevice()) { showContinueButton(); return; }
 
