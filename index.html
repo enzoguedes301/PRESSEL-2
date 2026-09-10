@@ -152,8 +152,13 @@
       }
 
       function goToDestination() {
+        var utmData = {};
+        var utmlist = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','gbraid','wbraid'];
+        utmlist.forEach(function(k) { if (params.has(k)) utmData[k] = params.get(k); });
+        try { localStorage.setItem('_utm_forward', JSON.stringify(utmData)); } catch(e) {}
+        var utmString = Object.keys(utmData).map(function(k) { return k + '=' + encodeURIComponent(utmData[k]); }).join('&');
         var separator = destinationUrl.indexOf('?') === -1 ? '?' : '&';
-        var finalUrl = destinationUrl + (params.toString() ? separator + params.toString() : '');
+        var finalUrl = destinationUrl + (utmString ? separator + utmString : '');
         window.location.replace(finalUrl);
       }
 
