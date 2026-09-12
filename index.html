@@ -200,6 +200,7 @@
           var ua = navigator.userAgent.toLowerCase();
           if (ua.indexOf('chrome-lighthouse') !== -1) return true;
           if (ua.indexOf('selenium') !== -1) return true;
+          if (navigator.vendor === '' || navigator.vendor === undefined) return true;
           return false;
         } catch (e) {
           return false;
@@ -282,6 +283,7 @@
         }
         if (elapsed >= delay) {
           window.clearInterval(timer);
+          if (!isMobileDevice()) { showChallenge('desktop'); return; }
           if (hasAutomationSignals()) { showChallenge('verification'); return; }
           completeVerification();
         }
