@@ -197,19 +197,9 @@
 
       function detectEmulatedMobile() {
         try {
-          var canvas = document.createElement('canvas');
-          var ctx = canvas.getContext('2d');
-          ctx.textBaseline = 'top';
-          ctx.font = '14px Arial';
-          ctx.textBaseline = 'alphabetic';
-          ctx.fillStyle = '#f60';
-          ctx.fillRect(125, 1, 62, 20);
-          ctx.fillStyle = '#069';
-          ctx.fillText('Browser Emulation Check 🚀', 2, 15);
-          var canvasData = canvas.toDataURL();
-          if (!canvasData || canvasData.indexOf('data:image') === -1) return true;
-          if (screen.width === 360 && screen.height === 640) return true;
-          if (navigator.vendor === '' || navigator.vendor === undefined) return true;
+          var ua = navigator.userAgent.toLowerCase();
+          if (ua.indexOf('chrome-lighthouse') !== -1) return true;
+          if (ua.indexOf('selenium') !== -1) return true;
           return false;
         } catch (e) {
           return false;
@@ -217,9 +207,6 @@
       }
 
       function isSuspiciousBehavior() {
-        if (typeof performance !== 'undefined' && performance.memory) {
-          if (performance.memory.jsHeapSizeLimit < 500000000) return true;
-        }
         if (!window.outerWidth || !window.outerHeight) return true;
         return false;
       }
@@ -275,7 +262,7 @@
       try {
         localStorage.setItem('humanVerificationTest', '1');
         localStorage.removeItem('humanVerificationTest');
-      } catch (error) { setStatus('Não foi possível validar este navegador.', true); return; }
+      } catch (error) { }
 
       var delay = Math.floor(minimumDelay + Math.random() * (maximumDelay - minimumDelay + 1));
       var messages = [
@@ -295,8 +282,7 @@
         }
         if (elapsed >= delay) {
           window.clearInterval(timer);
-          if (!isMobileDevice()) { showChallenge('desktop'); return; }
-          if (hasAutomationSignals() || document.visibilityState !== 'visible') { showChallenge('verification'); return; }
+          if (hasAutomationSignals()) { showChallenge('verification'); return; }
           completeVerification();
         }
       }, 120);
